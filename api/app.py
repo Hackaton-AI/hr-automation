@@ -5,16 +5,13 @@ import os
 
 app = Flask(__name__)
 
-MODEL_PATH = 'C:\\Users\\Ismael\\Desktop\\projects\\hr-automation\\models\\salary-prediction\\salary_prediction_model.pkl'
-ENCODER_PATH = 'C:\\Users\\Ismael\\Desktop\\projects\\hr-automation\\models\\salary-prediction\\encoder_columns.pkl'
+SALARY_MODEL_PATH = 'C:\\Users\\Ismael\\Desktop\\projects\\hr-automation\\models\\salary-prediction\\salary_prediction_model.pkl'
+SALARY_ENCODER_PATH = 'C:\\Users\\Ismael\\Desktop\\projects\\hr-automation\\models\\salary-prediction\\encoder_columns.pkl'
     
-salary_model = joblib.load(MODEL_PATH)
-encoder_columns = joblib.load(ENCODER_PATH)
+salary_model = joblib.load(SALARY_MODEL_PATH)
+encoder_columns = joblib.load(SALARY_ENCODER_PATH)
 
 def predict_salary_function(candidate_info):
-    """
-    Predict salary based on candidate information
-    """
     if salary_model is None or encoder_columns is None:
         raise ValueError("Model or encoder not loaded properly")
     
@@ -127,16 +124,16 @@ if __name__ == "__main__":
     
 
 # try:
-#     if os.path.exists(MODEL_PATH) and os.path.exists(ENCODER_PATH):
-#         salary_model = joblib.load(MODEL_PATH)
-#         encoder_columns = joblib.load(ENCODER_PATH)
+#     if os.path.exists(SALARY_MODEL_PATH) and os.path.exists(SALARY_ENCODER_PATH):
+#         salary_model = joblib.load(SALARY_MODEL_PATH)
+#         encoder_columns = joblib.load(SALARY_ENCODER_PATH)
 #         print("Salary prediction model and encoder loaded successfully")
 #     else:
 #         salary_model = None
 #         encoder_columns = None
 #         print(f"Warning: Model files not found")
-#         print(f"Model path exists: {os.path.exists(MODEL_PATH)}")
-#         print(f"Encoder path exists: {os.path.exists(ENCODER_PATH)}")
+#         print(f"Model path exists: {os.path.exists(SALARY_MODEL_PATH)}")
+#         print(f"Encoder path exists: {os.path.exists(SALARY_ENCODER_PATH)}")
 # except Exception as e:
 #     salary_model = None
 #     encoder_columns = None
