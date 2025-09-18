@@ -2,14 +2,19 @@ import joblib
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
 import os
+from resume import ResumeScreeningModel
+
 
 app = Flask(__name__)
 
 SALARY_MODEL_PATH = 'C:\\Users\\Ismael\\Desktop\\projects\\hr-automation\\models\\salary-prediction\\salary_prediction_model.pkl'
 SALARY_ENCODER_PATH = 'C:\\Users\\Ismael\\Desktop\\projects\\hr-automation\\models\\salary-prediction\\encoder_columns.pkl'
-    
+
+screen_model = ResumeScreeningModel()
 salary_model = joblib.load(SALARY_MODEL_PATH)
 encoder_columns = joblib.load(SALARY_ENCODER_PATH)
+
+screen_model.initialize()
 
 def predict_salary_function(candidate_info):
     if salary_model is None or encoder_columns is None:
@@ -60,9 +65,25 @@ def predict_salary():
 @app.route('/api/resume_screen/predict', methods=['POST'])
 def screen_resume():
     data = request.get_json()
-    # Run ML model
-    result = {"score": 0.87, "status": "accepted"} 
-    return jsonify(result)
+
+    # Extract input from request JSON
+    resume_text = data["resume_text_256"]
+    jd_text = data["jd_text_128"]
+    job_family = data["job_family"]
+    seniority = data["seniority"]
+
+    # Call the model’s specific function
+    try:
+        decision = screen_model.predict(resume_text, jd_text, job_family, seniority)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    
+    if decision:
+        return jsonify({"advance": True, "message": "Resume advances to interview stage"})
+    else:
+        return jsonify({"advance": False, "message": "Resume does not advance"})
+
+
 
 @app.route('/api/job_fit/predict', methods=['POST'])
 def predict_job_fit():
